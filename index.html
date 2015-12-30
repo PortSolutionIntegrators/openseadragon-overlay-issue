@@ -1,0 +1,70 @@
+<html>
+    <head>
+        <script src="./openseadragon.js"></script>
+        <style>
+            .openseadragon {
+            	width:      80%;
+                height:     400px;
+                border:     1px solid black;
+                color:      #333; /* text color for messages */
+                background-color: white;
+            }
+            .ocr-overlay {
+                color: white;
+                border: 1px solid #E77471;
+            }
+            .ocr-overlay .overlay-text {
+                color: yellow;
+                text-shadow: 1px 1px black;
+                position: relative;
+                left: 30px;
+                top: -20px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div>OpenSeadragon Window</div>
+        <div id="view-wrapper" class="openseadragon"></div>
+        <div>Original Image Size: 14080, 4096</div>
+        <div>Overlay Rect: 8616, 1408, 43, 655</div>
+        <hr/>
+
+        <div>Overlay in GIMP</div>
+        <img src="./correct.png"/>
+        <hr/>
+        
+        <div>Original Image</div>
+        <img src="./SideFar_21754141_0008-00_103680_2015-12-29-10-48-32-363.jpg" width="80%"/>
+
+        <script type="text/javascript">
+            function drawOverlay(imageRect, text) {
+                var viewportRect = viewer.viewport.imageToViewportRectangle(imageRect);
+                var textElement = document.createElement("div");
+                textElement.className = "overlay-text";
+                textElement.innerHTML = text;
+                var overlayElement = document.createElement("div");
+                overlayElement.className = "ocr-overlay";
+                overlayElement.appendChild(textElement);
+                viewer.addOverlay(overlayElement,
+                    viewportRect,
+                    OpenSeadragon.OverlayPlacement.TOP_LEFT);
+            }
+
+            var viewer = OpenSeadragon({
+                id: 'view-wrapper',
+                prefixUrl: "./images/"
+            });
+
+            viewer.addHandler('open', function() {
+                var imageRect = new OpenSeadragon.Rect(0, 0, 14080, 4096);
+                drawOverlay(imageRect, 'Image');
+
+                var containerNumberRect = new OpenSeadragon.Rect(8616, 1408, 43, 655);
+                drawOverlay(containerNumberRect, 'Container Number');
+            });
+
+            viewer.open('http://deepzoom.psivisionportal.com/Train_2015-12-29-10-48-05-790_inbound/SideFar/0008-00.dzi');
+        </script>
+    </body>
+</html>
